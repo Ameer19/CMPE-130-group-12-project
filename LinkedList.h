@@ -49,15 +49,15 @@ public:
 		stress=0;
 		head=NULL;
 }
-	int gettcount();
-	int getstress();
+	int gettcount();	
+	int getstress();	
 	void setname(string title);
 
 
-	bool findtask(const task &find);
+	bool findtask(const task &find);	//debugging purposes
 	void insert(const task& obj);
-    void printlist();
-    void destroylist();
+   	void printlist();
+    	void destroylist();
 
 	string getname();	//get info from header worker
 
@@ -70,8 +70,8 @@ public:
 //						more workers then tasks how is matching going to work?
 
 //head
-//Worker------>task		Our list will work like this with a head worker node pointing to any number of task nodes
-//		|				An Adjlist represents all the nodes adjacent TO the head node they are not necessarily adjacent to each other
+//Worker------>task		Our list will work like this with a the whole ADJlist structure represents a worker
+//		|		The actual list represents all the nodes adjacent TO the head node they are not necessarily adjacent to each other
 //		|______>task
 //		|
 //		|
