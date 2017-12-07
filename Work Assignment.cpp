@@ -26,8 +26,7 @@ public:
 							   //equal to the # of workers
 		store= new task[T];	//Use this for temporary task storage
 }
-	bool NoWorkers();
-	bool NoTasks();
+
 	void clearGraph();
 	void createWorkers();
 	void planTasks();
@@ -41,20 +40,10 @@ private:
 	int maxTasks;	//max number of vertices for tasks
 	int wSize;		//current number of workers
 	int tSize;		//current number of tasks
-	int gStress;
+	int gStress;	//Collective stress of all employess cannot exceed wSize * 8
 	Adjlist *graph; //pointer to the array of Adjlists
-	task *store; //pointer for task container
+	task *store;    //pointer for task container
 };
-
-
-bool Workforce::NoWorkers()
-{
-	return (wSize==0);
-}
-bool Workforce::NoTasks()
-{
-	return (tSize==0);
-}
 
 void Workforce::clearGraph()
 {
@@ -87,6 +76,7 @@ void Workforce::createWorkers()
 		return;
 	}
 	infile>>wSize;	//Our files will always start with the number of workers/tasks in file
+	getline(infile,title);	//discard extra \n
 
 	if(wSize>maxWorkers)	//stop the user if they attempt to put in more workers then possible
 	{
@@ -95,7 +85,7 @@ void Workforce::createWorkers()
 	}
 	for(int index=0; index<wSize;index++)	//Now start getting the names for the array indexs
 	{
-		infile>>title;
+		getline(infile, title);
 		graph[index].setname(title);	//starting putting in workers
 	}
 
@@ -181,7 +171,8 @@ void Workforce::assign_work()
 
 	if(wSize==0)
 	{
-		cout<<"Please Provide a this Squad some Workers"<<endl;
+		cout<<"Please Provide this Squad some Workers"<<endl;
+		return;
 	}
 	//1) Check to see if we have tasks to begin with
 	if(tSize==0)
@@ -193,6 +184,7 @@ void Workforce::assign_work()
 	if(gStress==check)
 	{
 		cout<<"Current task load is over capacity, please re-enter"<<endl;
+		return;
 	}
 	//Now if we plan greedily we should assign tasks form order of most time consuming to least time consuming
 	//to workers with the least stress to most stress
@@ -210,11 +202,18 @@ void Workforce::assign_work()
 			else
 			{
 				graph[j].insert(store[i]);
-				break;
+				break;	//end the loop early
 			}
 		}
 	}
-
+	if(maxWorkers<=10)
+	{
+		cout<<"Squad 1 is ready \n";
+	}
+	else
+	{
+		cout<<"Squad 2 is ready \n";
+	}
 }
 int main() {
 	Workforce test(10,20);
@@ -227,7 +226,7 @@ cout<<" Group 12 WorkForce Allocation \n" ;
 	    do
 	    {
 
-	                cout<<" 1. Enter a squad list of at most 10 workers (Demo only) \n";
+	                cout<<" 1. Enter a squad list of at most 10 workers \n";
 	                cout<<" 2. Enter a squad list of at most 50 workers \n";
 	                cout<<" 3. Enter a list of Tasks for Squad 1 to complete \n";
 	                cout<<" 4. Enter a list of Tasks for squad 2 to complete \n";
@@ -259,12 +258,9 @@ cout<<" Group 12 WorkForce Allocation \n" ;
 						  break;
 					  case 5 :
 						  test.assign_work();
-						  cout<<"Squad 1 is ready \n";
 						  break;
 					  case 6 :
 						  test2.assign_work();
-						  cout<<"Squad 2 is ready \n";
-						  a=1;
 						  break;
 					  case 7 :
 						  test.printGraph();
